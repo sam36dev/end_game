@@ -12,21 +12,29 @@ export default function Home() {
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [registered, setRegistered] = useState(false);
   const [entries, setEntries] = useState<Entry[]>([]);
+  const [configNumber, setConfigNumber] = useState<number>(0);
 
-  const fetchEntries = useCallback(async () => {
+  const fetchData = useCallback(async () => {
     try {
-      const res = await fetch("/api/entries");
-      if (res.ok) setEntries(await res.json());
+      const [entriesRes, configRes] = await Promise.all([
+        fetch("/api/entries"),
+        fetch("/api/config"),
+      ]);
+      if (entriesRes.ok) setEntries(await entriesRes.json());
+      if (configRes.ok) {
+        const data = await configRes.json();
+        setConfigNumber(data.number);
+      }
     } catch {
-      // silently ignore network errors
+      // silently ignore
     }
   }, []);
 
   useEffect(() => {
-    fetchEntries();
-    const interval = setInterval(fetchEntries, 3000);
+    fetchData();
+    const interval = setInterval(fetchData, 3000);
     return () => clearInterval(interval);
-  }, [fetchEntries]);
+  }, [fetchData]);
 
   function handleUnlock(token: string) {
     setAccessToken(token);
@@ -43,7 +51,7 @@ export default function Home() {
   }
 
   function handleAdd() {
-    fetchEntries();
+    fetchData();
   }
 
   function handleDone() {
@@ -75,7 +83,19 @@ export default function Home() {
         <div className="w-24" />
       </header>
 
-      <div className="flex-1 flex flex-col items-center gap-8 px-4 py-10">
+      <div className="flex-1 flex flex-col items-center gap-6 px-4 py-10">
+        {/* Número configurável pelo admin */}
+        <div className="w-full max-w-md">
+          <div className="bg-zinc-950 border border-zinc-900 rounded-2xl px-6 py-5 flex items-center justify-between">
+            <span className="text-zinc-500 text-xs uppercase tracking-widest font-semibold">
+              Meta
+            </span>
+            <span className="text-white font-black text-4xl tabular-nums">
+              {configNumber.toLocaleString("pt-BR")}
+            </span>
+          </div>
+        </div>
+
         <LeaderList entries={entries} />
       </div>
 

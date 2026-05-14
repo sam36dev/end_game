@@ -66,7 +66,7 @@ export default function EntryForm({ token, onAdd, onCancel }: EntryFormProps) {
           onClick={onCancel}
           className="w-full bg-purple-700 hover:bg-purple-600 text-white font-bold py-4 rounded-lg transition-colors tracking-wider uppercase text-base"
         >
-          Ver Ranking
+          Ver Lista
         </button>
       </div>
     );

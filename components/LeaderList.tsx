@@ -22,7 +22,7 @@ export default function LeaderList({ entries }: LeaderListProps) {
       {sorted.map((entry, index) => (
         <div
           key={entry.id}
-          className="flex items-center justify-between px-5 py-5 rounded-xl bg-zinc-950 border border-zinc-900 hover:border-zinc-800 transition-colors"
+          className="flex items-center justify-between px-5 py-5 rounded-xl bg-zinc-950 border border-zinc-900"
         >
           <div className="flex items-center gap-4">
             <span className="text-zinc-600 text-sm font-mono w-6 text-right shrink-0">
