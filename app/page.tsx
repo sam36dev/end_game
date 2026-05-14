@@ -61,26 +61,27 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-black flex flex-col">
-      <header className="w-full flex items-center justify-between px-6 py-4 border-b border-zinc-900">
-        {!registered && (
-          <button
-            onClick={handleTokenButtonClick}
-            className={`text-sm uppercase tracking-widest font-semibold px-4 py-2 rounded-lg border transition-all ${
-              accessToken
-                ? "border-purple-600 text-purple-400 hover:bg-purple-500/10 cursor-pointer"
-                : "border-zinc-600 text-zinc-400 hover:bg-zinc-800 cursor-pointer"
-            }`}
-          >
-            {accessToken ? "+ Registrar" : "Token"}
-          </button>
-        )}
-        {registered && <div className="w-24" />}
+      <header className="w-full flex items-center px-4 py-5 border-b border-zinc-900">
+        <div className="w-28 flex items-center">
+          {!registered && (
+            <button
+              onClick={handleTokenButtonClick}
+              className={`text-xs uppercase tracking-widest font-semibold px-3 py-2 rounded-lg border transition-all whitespace-nowrap ${
+                accessToken
+                  ? "border-purple-600 text-purple-400 hover:bg-purple-500/10 cursor-pointer"
+                  : "border-zinc-600 text-zinc-400 hover:bg-zinc-800 cursor-pointer"
+              }`}
+            >
+              {accessToken ? "+ Registrar" : "Token"}
+            </button>
+          )}
+        </div>
 
-        <h1 className="text-2xl font-black tracking-[0.3em] uppercase text-white">
+        <h1 className="flex-1 text-center text-2xl font-black tracking-[0.3em] uppercase text-white">
           END GAME
         </h1>
 
-        <div className="w-24" />
+        <div className="w-28" />
       </header>
 
       <div className="flex-1 flex flex-col items-center gap-6 px-4 py-10">

@@ -76,7 +76,7 @@ export default function AdminPage() {
 
   if (!loggedIn) {
     return (
-      <main className="min-h-screen bg-black flex flex-col items-center justify-center px-4">
+      <main className="min-h-screen bg-black flex flex-col items-center justify-center px-5">
         <div className="w-full max-w-sm">
           <h1 className="text-3xl font-black tracking-[0.3em] uppercase text-white text-center mb-2">
             END GAME
@@ -87,7 +87,7 @@ export default function AdminPage() {
 
           <form
             onSubmit={handleLogin}
-            className="bg-zinc-950 border border-zinc-900 rounded-2xl p-8 flex flex-col gap-4"
+            className="bg-zinc-950 border border-zinc-900 rounded-2xl p-6 flex flex-col gap-4"
           >
             <input
               autoFocus
@@ -121,7 +121,7 @@ export default function AdminPage() {
   }
 
   return (
-    <main className="min-h-screen bg-black flex flex-col items-center justify-center px-4 py-10">
+    <main className="min-h-screen bg-black flex flex-col items-center justify-center px-5 py-10">
       <div className="w-full max-w-sm flex flex-col gap-6">
         <div className="text-center">
           <h1 className="text-3xl font-black tracking-[0.3em] uppercase text-white mb-1">
