@@ -5,7 +5,7 @@ import { useState } from "react";
 export default function AdminPage() {
   const [password, setPassword] = useState("");
   const [loggedIn, setLoggedIn] = useState(false);
-  const [authError, setAuthError] = useState(false);
+  const [authError, setAuthError] = useState("");
   const [loading, setLoading] = useState(false);
   const [currentToken, setCurrentToken] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
@@ -19,13 +19,13 @@ export default function AdminPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ password }),
       });
+      const data = await res.json();
       if (res.ok) {
-        const data = await res.json();
         setCurrentToken(data.token);
         setLoggedIn(true);
         setAuthError(false);
       } else {
-        setAuthError(true);
+        setAuthError(res.status === 500 ? "Erro de configuração no servidor." : "Senha incorreta.");
         setPassword("");
       }
     } finally {
@@ -61,7 +61,7 @@ export default function AdminPage() {
               value={password}
               onChange={(e) => {
                 setPassword(e.target.value);
-                setAuthError(false);
+                setAuthError("");
               }}
               placeholder="Senha"
               className={`bg-zinc-900 border rounded-lg px-4 py-4 text-base text-white placeholder-zinc-600 focus:outline-none focus:ring-2 transition-all ${
@@ -71,7 +71,7 @@ export default function AdminPage() {
               }`}
             />
             {authError && (
-              <p className="text-red-500 text-sm -mt-2">Senha incorreta.</p>
+              <p className="text-red-500 text-sm -mt-2">{authError}</p>
             )}
             <button
               type="submit"
