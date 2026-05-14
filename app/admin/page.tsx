@@ -19,15 +19,20 @@ export default function AdminPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ password }),
       });
-      const data = await res.json();
-      if (res.ok) {
+      const data = await res.json().catch(() => ({}));
+      if (res.ok && data.token) {
         setCurrentToken(data.token);
         setLoggedIn(true);
         setAuthError("");
+      } else if (res.status === 401) {
+        setAuthError("Senha incorreta.");
+        setPassword("");
       } else {
-        setAuthError(res.status === 500 ? "Erro de configuração no servidor." : "Senha incorreta.");
+        setAuthError(`Erro ${res.status}: ${data.error ?? "tente novamente"}`);
         setPassword("");
       }
+    } catch {
+      setAuthError("Erro de conexão. Tente novamente.");
     } finally {
       setLoading(false);
     }

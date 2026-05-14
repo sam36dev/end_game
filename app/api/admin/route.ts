@@ -26,8 +26,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const token = generateToken();
-  await redis.set("endgame:token", token);
-
-  return NextResponse.json({ token });
+  try {
+    const token = generateToken();
+    await redis.set("endgame:token", token);
+    return NextResponse.json({ token });
+  } catch {
+    return NextResponse.json({ error: "Redis error" }, { status: 500 });
+  }
 }
