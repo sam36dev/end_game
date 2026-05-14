@@ -10,16 +10,26 @@ interface TokenModalProps {
 export default function TokenModal({ onSuccess, onClose }: TokenModalProps) {
   const [value, setValue] = useState("");
   const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    const stored = localStorage.getItem("endgame_token");
-    if (stored && value.trim() === stored.trim()) {
-      localStorage.setItem("endgame_unlocked", "true");
-      onSuccess();
-    } else {
-      setError(true);
-      setValue("");
+    setLoading(true);
+    try {
+      const res = await fetch("/api/validate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token: value.trim() }),
+      });
+      const data = await res.json();
+      if (data.valid) {
+        onSuccess();
+      } else {
+        setError(true);
+        setValue("");
+      }
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -60,9 +70,10 @@ export default function TokenModal({ onSuccess, onClose }: TokenModalProps) {
           )}
           <button
             type="submit"
-            className="w-full bg-purple-700 hover:bg-purple-600 text-white font-bold py-4 rounded-lg transition-colors tracking-wider uppercase text-base"
+            disabled={loading}
+            className="w-full bg-purple-700 hover:bg-purple-600 disabled:opacity-50 text-white font-bold py-4 rounded-lg transition-colors tracking-wider uppercase text-base"
           >
-            Confirmar
+            {loading ? "..." : "Confirmar"}
           </button>
         </form>
       </div>

@@ -11,15 +11,8 @@ export default function Home() {
   const [showForm, setShowForm] = useState(false);
   const [unlocked, setUnlocked] = useState(false);
   const [entries, setEntries] = useState<Entry[]>([]);
-  const [hasToken, setHasToken] = useState(false);
 
   useEffect(() => {
-    const storedToken = localStorage.getItem("endgame_token");
-    setHasToken(!!storedToken);
-
-    const isUnlocked = localStorage.getItem("endgame_unlocked") === "true";
-    setUnlocked(isUnlocked);
-
     const storedEntries = localStorage.getItem("endgame_entries");
     if (storedEntries) setEntries(JSON.parse(storedEntries));
   }, []);
@@ -31,7 +24,6 @@ export default function Home() {
   }
 
   function handleTokenButtonClick() {
-    if (!hasToken) return;
     if (unlocked) {
       setShowForm(true);
     } else {
@@ -48,16 +40,13 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-black flex flex-col">
-      {/* Header */}
       <header className="w-full flex items-center justify-between px-6 py-4 border-b border-zinc-900">
         <button
           onClick={handleTokenButtonClick}
           className={`text-sm uppercase tracking-widest font-semibold px-4 py-2 rounded-lg border transition-all ${
             unlocked
               ? "border-purple-600 text-purple-400 hover:bg-purple-500/10 cursor-pointer"
-              : hasToken
-              ? "border-zinc-600 text-zinc-400 hover:bg-zinc-800 cursor-pointer"
-              : "border-zinc-800 text-zinc-700 cursor-default"
+              : "border-zinc-600 text-zinc-400 hover:bg-zinc-800 cursor-pointer"
           }`}
         >
           {unlocked ? "+ Registrar" : "Token"}
@@ -70,12 +59,10 @@ export default function Home() {
         <div className="w-24" />
       </header>
 
-      {/* Body */}
       <div className="flex-1 flex flex-col items-center gap-8 px-4 py-10">
         <LeaderList entries={entries} />
       </div>
 
-      {/* Entry form modal */}
       {showForm && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm"
@@ -87,7 +74,6 @@ export default function Home() {
         </div>
       )}
 
-      {/* Token modal */}
       {showTokenModal && (
         <TokenModal
           onSuccess={handleUnlock}
