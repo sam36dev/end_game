@@ -1,10 +1,15 @@
-import { kv } from "@vercel/kv";
+import { Redis } from "@upstash/redis";
 import { NextRequest, NextResponse } from "next/server";
 import type { Entry } from "@/types";
 
+const redis = new Redis({
+  url: process.env.UPSTASH_REDIS_REST_URL!,
+  token: process.env.UPSTASH_REDIS_REST_TOKEN!,
+});
+
 export async function GET() {
   try {
-    const raw = await kv.lrange<string>("endgame:entries", 0, -1);
+    const raw = await redis.lrange<string>("endgame:entries", 0, -1);
     const entries: Entry[] = raw.map((item) =>
       typeof item === "string" ? JSON.parse(item) : item
     );
@@ -23,7 +28,7 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    await kv.lpush("endgame:entries", JSON.stringify(entry));
+    await redis.lpush("endgame:entries", JSON.stringify(entry));
     return NextResponse.json({ ok: true });
   } catch {
     return NextResponse.json({ error: "Storage error" }, { status: 500 });
