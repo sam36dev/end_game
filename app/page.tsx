@@ -97,7 +97,7 @@ export default function Home() {
           </div>
         </div>
 
-        <LeaderList entries={entries} />
+        <LeaderList entries={entries} encerrados={configNumber} />
       </div>
 
       {showForm && accessToken && (
