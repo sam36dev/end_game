@@ -23,7 +23,7 @@ export default function AdminPage() {
       if (res.ok) {
         setCurrentToken(data.token);
         setLoggedIn(true);
-        setAuthError(false);
+        setAuthError("");
       } else {
         setAuthError(res.status === 500 ? "Erro de configuração no servidor." : "Senha incorreta.");
         setPassword("");
