@@ -88,7 +88,7 @@ export default function Home() {
         <div className="w-full max-w-md">
           <div className="bg-zinc-950 border border-zinc-900 rounded-2xl px-6 py-5 flex items-center justify-between">
             <span className="text-zinc-500 text-xs uppercase tracking-widest font-semibold">
-              Meta
+              Encerrados
             </span>
             <span className="text-white font-black text-4xl tabular-nums">
               {configNumber.toLocaleString("pt-BR")}

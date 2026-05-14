@@ -157,7 +157,7 @@ export default function AdminPage() {
         {/* Número configurável */}
         <div className="bg-zinc-950 border border-zinc-900 rounded-2xl p-6 flex flex-col gap-4">
           <p className="text-xs uppercase tracking-widest text-zinc-600">
-            Número da Meta
+            Encerrados
           </p>
           <form onSubmit={handleSaveNumber} className="flex gap-3">
             <input
