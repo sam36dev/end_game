@@ -41,7 +41,7 @@ export default function EntryForm({ token, onAdd, onCancel }: EntryFormProps) {
         onAdd(entry);
         setSuccess(true);
       } else if (res.status === 409) {
-        setError("Valor indisponível.");
+        setError("Valor indisponível, duas pessoas já escolheram esse valor.");
       } else {
         setError("Erro ao salvar. Tente novamente.");
       }
