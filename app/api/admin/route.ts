@@ -1,4 +1,19 @@
+import { Redis } from "@upstash/redis";
 import { NextRequest, NextResponse } from "next/server";
+
+const redis = new Redis({
+  url: process.env.UPSTASH_REDIS_REST_URL!,
+  token: process.env.UPSTASH_REDIS_REST_TOKEN!,
+});
+
+function generateToken() {
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  let token = "";
+  for (let i = 0; i < 8; i++) {
+    token += chars[Math.floor(Math.random() * chars.length)];
+  }
+  return token;
+}
 
 export async function POST(req: NextRequest) {
   const { password } = await req.json();
@@ -11,5 +26,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  return NextResponse.json({ token: process.env.ACCESS_TOKEN });
+  const token = generateToken();
+  await redis.set("endgame:token", token);
+
+  return NextResponse.json({ token });
 }

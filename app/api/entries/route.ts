@@ -23,7 +23,8 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   const { token, entry } = await req.json();
 
-  if (!token || token !== process.env.ACCESS_TOKEN) {
+  const stored = await redis.get<string>("endgame:token");
+  if (!token || token !== stored) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
