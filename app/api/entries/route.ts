@@ -29,6 +29,14 @@ export async function POST(req: NextRequest) {
   }
 
   try {
+    const raw = await redis.lrange<string>("endgame:entries", 0, -1);
+    const existing = raw.map((item) =>
+      typeof item === "string" ? JSON.parse(item) : item
+    );
+    const count = existing.filter((e) => e.numero === entry.numero).length;
+    if (count >= 2) {
+      return NextResponse.json({ error: "Valor indisponível" }, { status: 409 });
+    }
     await redis.lpush("endgame:entries", JSON.stringify(entry));
     return NextResponse.json({ ok: true });
   } catch {

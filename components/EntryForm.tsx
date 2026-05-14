@@ -40,6 +40,8 @@ export default function EntryForm({ token, onAdd, onCancel }: EntryFormProps) {
       if (res.ok) {
         onAdd(entry);
         setSuccess(true);
+      } else if (res.status === 409) {
+        setError("Valor indisponível.");
       } else {
         setError("Erro ao salvar. Tente novamente.");
       }
