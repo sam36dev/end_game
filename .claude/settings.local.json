@@ -4,7 +4,10 @@
       "Bash(npm run *)",
       "Bash(mkdir -p \"C:\\\\Users\\\\SamueldaSilvaSantos\\\\.claude\\\\projects\\\\c--EU-MESMO-end-game\\\\memory\")",
       "Bash(npm install *)",
-      "Bash(npm uninstall *)"
+      "Bash(npm uninstall *)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git push *)"
     ],
     "additionalDirectories": [
       "C:\\Users\\SamueldaSilvaSantos\\.claude\\projects\\c--EU-MESMO-end-game"
