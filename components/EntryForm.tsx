@@ -4,26 +4,48 @@ import { useState } from "react";
 import type { Entry } from "@/types";
 
 interface EntryFormProps {
+  token: string;
   onAdd: (entry: Entry) => void;
   onCancel: () => void;
 }
 
-export default function EntryForm({ onAdd, onCancel }: EntryFormProps) {
+export default function EntryForm({ token, onAdd, onCancel }: EntryFormProps) {
   const [nome, setNome] = useState("");
   const [sobrenome, setSobrenome] = useState("");
   const [numero, setNumero] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!nome.trim() || !sobrenome.trim() || numero === "") return;
+    setLoading(true);
+    setError("");
 
-    onAdd({
+    const entry: Entry = {
       id: crypto.randomUUID(),
       nome: nome.trim(),
       sobrenome: sobrenome.trim(),
       numero: Number(numero),
       timestamp: Date.now(),
-    });
+    };
+
+    try {
+      const res = await fetch("/api/entries", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token, entry }),
+      });
+      if (res.ok) {
+        onAdd(entry);
+      } else {
+        setError("Erro ao salvar. Tente novamente.");
+      }
+    } catch {
+      setError("Sem conexão. Tente novamente.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -70,11 +92,14 @@ export default function EntryForm({ onAdd, onCancel }: EntryFormProps) {
         className="bg-zinc-900 border border-zinc-800 rounded-lg px-4 py-4 text-base text-white placeholder-zinc-600 focus:outline-none focus:ring-2 focus:ring-purple-600 transition-all"
       />
 
+      {error && <p className="text-red-500 text-sm -mt-2">{error}</p>}
+
       <button
         type="submit"
-        className="w-full bg-purple-700 hover:bg-purple-600 text-white font-bold py-4 rounded-lg transition-colors tracking-wider uppercase text-base mt-1"
+        disabled={loading}
+        className="w-full bg-purple-700 hover:bg-purple-600 disabled:opacity-50 text-white font-bold py-4 rounded-lg transition-colors tracking-wider uppercase text-base mt-1"
       >
-        Confirmar
+        {loading ? "Salvando..." : "Confirmar"}
       </button>
     </form>
   );

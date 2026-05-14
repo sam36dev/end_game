@@ -3,7 +3,7 @@
 import { useState } from "react";
 
 interface TokenModalProps {
-  onSuccess: () => void;
+  onSuccess: (token: string) => void;
   onClose: () => void;
 }
 
@@ -23,7 +23,7 @@ export default function TokenModal({ onSuccess, onClose }: TokenModalProps) {
       });
       const data = await res.json();
       if (data.valid) {
-        onSuccess();
+        onSuccess(value.trim());
       } else {
         setError(true);
         setValue("");

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import TokenModal from "@/components/TokenModal";
 import EntryForm from "@/components/EntryForm";
 import LeaderList from "@/components/LeaderList";
@@ -9,33 +9,41 @@ import type { Entry } from "@/types";
 export default function Home() {
   const [showTokenModal, setShowTokenModal] = useState(false);
   const [showForm, setShowForm] = useState(false);
-  const [unlocked, setUnlocked] = useState(false);
+  const [accessToken, setAccessToken] = useState<string | null>(null);
   const [entries, setEntries] = useState<Entry[]>([]);
 
-  useEffect(() => {
-    const storedEntries = localStorage.getItem("endgame_entries");
-    if (storedEntries) setEntries(JSON.parse(storedEntries));
+  const fetchEntries = useCallback(async () => {
+    try {
+      const res = await fetch("/api/entries");
+      if (res.ok) setEntries(await res.json());
+    } catch {
+      // silently ignore network errors
+    }
   }, []);
 
-  function handleUnlock() {
-    setUnlocked(true);
+  useEffect(() => {
+    fetchEntries();
+    const interval = setInterval(fetchEntries, 3000);
+    return () => clearInterval(interval);
+  }, [fetchEntries]);
+
+  function handleUnlock(token: string) {
+    setAccessToken(token);
     setShowTokenModal(false);
     setShowForm(true);
   }
 
   function handleTokenButtonClick() {
-    if (unlocked) {
+    if (accessToken) {
       setShowForm(true);
     } else {
       setShowTokenModal(true);
     }
   }
 
-  function handleAdd(entry: Entry) {
-    const updated = [...entries, entry];
-    setEntries(updated);
-    localStorage.setItem("endgame_entries", JSON.stringify(updated));
+  function handleAdd() {
     setShowForm(false);
+    fetchEntries();
   }
 
   return (
@@ -44,12 +52,12 @@ export default function Home() {
         <button
           onClick={handleTokenButtonClick}
           className={`text-sm uppercase tracking-widest font-semibold px-4 py-2 rounded-lg border transition-all ${
-            unlocked
+            accessToken
               ? "border-purple-600 text-purple-400 hover:bg-purple-500/10 cursor-pointer"
               : "border-zinc-600 text-zinc-400 hover:bg-zinc-800 cursor-pointer"
           }`}
         >
-          {unlocked ? "+ Registrar" : "Token"}
+          {accessToken ? "+ Registrar" : "Token"}
         </button>
 
         <h1 className="text-2xl font-black tracking-[0.3em] uppercase text-white">
@@ -63,13 +71,17 @@ export default function Home() {
         <LeaderList entries={entries} />
       </div>
 
-      {showForm && (
+      {showForm && accessToken && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm"
           onClick={() => setShowForm(false)}
         >
           <div onClick={(e) => e.stopPropagation()}>
-            <EntryForm onAdd={handleAdd} onCancel={() => setShowForm(false)} />
+            <EntryForm
+              token={accessToken}
+              onAdd={handleAdd}
+              onCancel={() => setShowForm(false)}
+            />
           </div>
         </div>
       )}
