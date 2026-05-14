@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run *)",
+      "Bash(mkdir -p \"C:\\\\Users\\\\SamueldaSilvaSantos\\\\.claude\\\\projects\\\\c--EU-MESMO-end-game\\\\memory\")"
+    ],
+    "additionalDirectories": [
+      "C:\\Users\\SamueldaSilvaSantos\\.claude\\projects\\c--EU-MESMO-end-game"
+    ]
+  }
+}
