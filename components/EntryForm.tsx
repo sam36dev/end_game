@@ -15,6 +15,7 @@ export default function EntryForm({ token, onAdd, onCancel }: EntryFormProps) {
   const [numero, setNumero] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -38,6 +39,7 @@ export default function EntryForm({ token, onAdd, onCancel }: EntryFormProps) {
       });
       if (res.ok) {
         onAdd(entry);
+        setSuccess(true);
       } else {
         setError("Erro ao salvar. Tente novamente.");
       }
@@ -46,6 +48,28 @@ export default function EntryForm({ token, onAdd, onCancel }: EntryFormProps) {
     } finally {
       setLoading(false);
     }
+  }
+
+  if (success) {
+    return (
+      <div className="w-full max-w-sm mx-4 bg-zinc-950 border border-zinc-800 rounded-2xl p-10 shadow-2xl flex flex-col items-center gap-6">
+        <div className="w-16 h-16 rounded-full bg-purple-700/20 border border-purple-700 flex items-center justify-center">
+          <span className="text-purple-400 text-3xl">✓</span>
+        </div>
+        <div className="text-center">
+          <p className="text-white font-bold text-xl">Registrado!</p>
+          <p className="text-zinc-500 text-sm mt-1">
+            {nome} {sobrenome} — {Number(numero).toLocaleString("pt-BR")}
+          </p>
+        </div>
+        <button
+          onClick={onCancel}
+          className="w-full bg-purple-700 hover:bg-purple-600 text-white font-bold py-4 rounded-lg transition-colors tracking-wider uppercase text-base"
+        >
+          Ver Ranking
+        </button>
+      </div>
+    );
   }
 
   return (

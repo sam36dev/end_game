@@ -10,6 +10,7 @@ export default function Home() {
   const [showTokenModal, setShowTokenModal] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [accessToken, setAccessToken] = useState<string | null>(null);
+  const [registered, setRegistered] = useState(false);
   const [entries, setEntries] = useState<Entry[]>([]);
 
   const fetchEntries = useCallback(async () => {
@@ -42,23 +43,30 @@ export default function Home() {
   }
 
   function handleAdd() {
-    setShowForm(false);
     fetchEntries();
+  }
+
+  function handleDone() {
+    setShowForm(false);
+    setRegistered(true);
   }
 
   return (
     <main className="min-h-screen bg-black flex flex-col">
       <header className="w-full flex items-center justify-between px-6 py-4 border-b border-zinc-900">
-        <button
-          onClick={handleTokenButtonClick}
-          className={`text-sm uppercase tracking-widest font-semibold px-4 py-2 rounded-lg border transition-all ${
-            accessToken
-              ? "border-purple-600 text-purple-400 hover:bg-purple-500/10 cursor-pointer"
-              : "border-zinc-600 text-zinc-400 hover:bg-zinc-800 cursor-pointer"
-          }`}
-        >
-          {accessToken ? "+ Registrar" : "Token"}
-        </button>
+        {!registered && (
+          <button
+            onClick={handleTokenButtonClick}
+            className={`text-sm uppercase tracking-widest font-semibold px-4 py-2 rounded-lg border transition-all ${
+              accessToken
+                ? "border-purple-600 text-purple-400 hover:bg-purple-500/10 cursor-pointer"
+                : "border-zinc-600 text-zinc-400 hover:bg-zinc-800 cursor-pointer"
+            }`}
+          >
+            {accessToken ? "+ Registrar" : "Token"}
+          </button>
+        )}
+        {registered && <div className="w-24" />}
 
         <h1 className="text-2xl font-black tracking-[0.3em] uppercase text-white">
           END GAME
@@ -80,7 +88,7 @@ export default function Home() {
             <EntryForm
               token={accessToken}
               onAdd={handleAdd}
-              onCancel={() => setShowForm(false)}
+              onCancel={handleDone}
             />
           </div>
         </div>
